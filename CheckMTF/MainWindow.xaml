@@ -1,0 +1,343 @@
+﻿<Window x:Class="CheckMTF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CheckMTF"
+        xmlns:uc="clr-namespace:CheckMTF.MyUserControl"
+        xmlns:Mydata="clr-namespace:CheckMTF.ViewModel"
+        xmlns:Myconverter="clr-namespace:CheckMTF.MyConverter"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+         TextElement.FontWeight="Regular"
+         TextElement.FontSize="13"
+         TextOptions.TextFormattingMode="Ideal"
+         TextOptions.TextRenderingMode="Auto"
+         Background="{DynamicResource MaterialDesignPaper}"
+         FontFamily="{DynamicResource MaterialDesignFont}"
+         WindowStyle="None"
+         ResizeMode="NoResize"
+        WindowState="Maximized"
+         Title="MainWindow" Height="450" Width="800">
+    <Window.DataContext>
+        <Mydata:MainViewModel>
+        </Mydata:MainViewModel>
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <uc:MyControlBarxaml Grid.Row="0"></uc:MyControlBarxaml>
+        <Grid Grid.Row="1">
+            <TabControl Width="auto" materialDesign:ColorZoneAssist.Background="{DynamicResource MaterialDesignCardBackground}" materialDesign:ColorZoneAssist.Foreground="{DynamicResource PrimaryHueMidBrush}" materialDesign:ColorZoneAssist.Mode="Custom" Style="{StaticResource MaterialDesignFilledTabControl}">
+                <TabItem >
+                    <TabItem.Header >
+                        <TextBlock Text="Kiểm tra File" FontSize="20"></TextBlock>
+                    </TabItem.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition ></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="5,10,0,5" Orientation="Horizontal">
+                                <StackPanel.Resources>
+                                    <Myconverter:MyDateTimeConvert x:Key="datetimveconvert">
+
+                                    </Myconverter:MyDateTimeConvert>
+                                </StackPanel.Resources>
+                                <ComboBox SelectedItem="{Binding Modelselected, Mode=OneWayToSource}" ItemsSource="{Binding cmb_data}" Margin="0,0,20,0"  FontSize="15" Height="auto" Width="250" materialDesign:HintAssist.Hint="Hãy chọn Model" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True">
+                                </ComboBox>
+                                <DatePicker SelectedDate="{Binding Dateselected, Mode=OneWayToSource}"  FontSize="15" Width="250"  materialDesign:HintAssist.Hint="Hãy chọn tháng cần kiểm tra" Style="{StaticResource MaterialDesignOutlinedDatePicker}" IsTodayHighlighted="True" SelectedDateFormat="Short"  />
+                                <Button Command="{Binding cmd_startcheck}" FontSize="15" Foreground="Black"  Background="Green" Content="Kiểm tra" Height="40" Margin="20,0,0,0" Width="100"></Button>
+                            </StackPanel>
+                                <Button Command="{Binding cmd_exportdatatab1}" Grid.Column="1" HorizontalAlignment="Right" Foreground="Black" Background="Chocolate" FontSize="15" Content="Xuất dữ liệu " VerticalAlignment="Bottom" Margin="0,0,40,10"  ></Button>
+                        </Grid>
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Separator Grid.Row="0"></Separator>
+                            <ListView Grid.Row="1" ItemsSource="{Binding myListErrorFileCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <ListView.Resources>
+                                    <Style TargetType="GridViewColumnHeader">
+                                        <Setter Property="FontSize" Value="18"></Setter>
+                                    </Style>
+                                </ListView.Resources>
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Width="80"  Header="Model" >
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding NameModel}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="500"  Header="FilePath" >
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FilePath}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="200" Header="FileName">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FileName}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="200" Header="DateCreate">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding DateCreate}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="200" Header="DateModify">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding DateModify}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="80" Header="Status">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Statuscheck}">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="Text" Value="NG">
+                                                                        <Setter Property="Background" Value="Red"></Setter>
+                                                                    </Trigger>
+                                                                    <Trigger Property="Text" Value="OK">
+                                                                        <Setter Property="Background" Value="Green"></Setter>
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+
+                                </ListView.View>
+                            </ListView>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header >
+                        <TextBlock Text="Kiểm tra nội dung file" FontSize="20"></TextBlock>
+                    </TabItem.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition ></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="5,10,0,5" Orientation="Horizontal">
+                                <ComboBox SelectedItem="{Binding Modelselectedtab2, Mode=OneWayToSource}" ItemsSource="{Binding cmb_datatab2}" Margin="0,0,20,0"  FontSize="15" Height="auto" Width="250" materialDesign:HintAssist.Hint="Hãy chọn Model" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True">
+                                </ComboBox>
+                                <DatePicker SelectedDate="{Binding Dateselectedtab2, Mode=OneWayToSource}"  FontSize="15" Width="250"  materialDesign:HintAssist.Hint="Hãy chọn tháng cần kiểm tra" Style="{StaticResource MaterialDesignOutlinedDatePicker}" IsTodayHighlighted="True" SelectedDateFormat="Short"  />
+                                <Button Command="{Binding cmd_startchecktab2}" FontSize="15" Foreground="Black"  Background="Green" Content="Kiểm tra" Height="40" Margin="20,0,0,0" Width="100"></Button>
+                            </StackPanel>
+                            <Button Command="{Binding cmd_exportdatatab2}" Grid.Column="1" HorizontalAlignment="Right" Foreground="Black" Background="Chocolate" FontSize="15" Content="Xuất dữ liệu " VerticalAlignment="Bottom" Margin="0,0,40,10"  ></Button>
+                        </Grid>
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Separator Grid.Row="0"></Separator>
+                            <ListView Name="Listview_tab2" Grid.Row="1" ItemsSource="{Binding myListErrorContentFileCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <ListView.Resources>
+                                    <Style TargetType="GridViewColumnHeader">
+                                        <Setter Property="FontSize" Value="18"></Setter>
+                                    </Style>
+                                </ListView.Resources>
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Width="80"  Header="Model" >
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding NameModel}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="500"  Header="FilePath" >
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FilePath}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="200" Header="FileName">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FileName}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="100" Header="Numberline">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding NumberLine}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="200" Header="HeaderData">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding HeaderLine}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="200" Header="EndData">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding EndLine}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="80" Header="Status">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Statuscheck}">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="Text" Value="NG">
+                                                                        <Setter Property="Background" Value="Red"></Setter>
+                                                                    </Trigger>
+                                                                    <Trigger Property="Text" Value="OK">
+                                                                        <Setter Property="Background" Value="Green"></Setter>
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+
+                                </ListView.View>
+                            </ListView>
+                        </Grid>
+                    </Grid>
+
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header >
+                        <TextBlock Text="Kiểm tra File cài đặt" FontSize="20"></TextBlock>
+                    </TabItem.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition ></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="5,10,0,5" Orientation="Horizontal">
+                                <ComboBox SelectedItem="{Binding Modelselectedtab3, Mode=OneWayToSource}" ItemsSource="{Binding cmb_datatab2}" Margin="0,0,20,0"  FontSize="15" Height="auto" Width="250" materialDesign:HintAssist.Hint="Hãy chọn Model" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True">
+                                </ComboBox>
+                                <Button Command="{Binding cmd_startchecktab3}" FontSize="15" Foreground="Black"  Background="Green" Content="Kiểm tra" Height="40" Margin="20,0,0,0" Width="100"></Button>
+                            </StackPanel>
+                            <Button Command="{Binding cmd_exportdatatab3}" Grid.Column="1" HorizontalAlignment="Right" Foreground="Black" Background="Chocolate" FontSize="15" Content="Xuất dữ liệu " VerticalAlignment="Bottom" Margin="0,0,40,10"  ></Button>
+                        </Grid>
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Separator Grid.Row="0"></Separator>
+                            <ListView Name="Listview_tab3" Grid.Row="1" ItemsSource="{Binding myListErrorConfigFileCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <ListView.Resources>
+                                    <Style TargetType="GridViewColumnHeader">
+                                        <Setter Property="FontSize" Value="18"></Setter>
+                                    </Style>
+                                </ListView.Resources>
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Width="80"  Header="Model" >
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding NameModel}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="500"  Header="FilePath" >
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FilePath}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="200" Header="FileName">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FileName}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="200" Header="DateCreate">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding DateCreate}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="200" Header="Datemodify">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Datemodify}"></TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="80" Header="Status">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Statuscheck}">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="Text" Value="NG">
+                                                                        <Setter Property="Background" Value="Red"></Setter>
+                                                                    </Trigger>
+                                                                    <Trigger Property="Text" Value="OK">
+                                                                        <Setter Property="Background" Value="Green"></Setter>
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,30 @@
+﻿{
+  "Model": {
+    "NameModel": [ "AA062S", "AA056SF", "AA022N", "AA02E", "AA025N", "AA025E", "AAF050S", "AAF051S", "AAF053S", "AB070S", "AB070X", "AA057S", "AA057X", "AB061S", "AB061X", "AA071SF", "AB028N", "AB028E", "AA067S", "AA046B", "AA046S" ],
+    "Path": [
+      [ "C:\\Users\\TA\\OneDrive\\Desktop\\datatest" ],
+      [ "\\\\192.168.1.168\\Tamron\\Data_Inspc2\\Inspection\\d3" ],
+      [ "", "" ],
+      [ "", "" ],
+      [ "", "" ],
+      [ "", "" ],
+      [ "", "" ]
+    ]
+  },
+  "ConfigModel": {
+    "NameModel": [ "AA062S", "AA056SF", "AA022N", "AA02E", "AA025N", "AA025E", "AAF050S", "AAF051S", "AAF053S", "AB070S", "AB070X", "AA057S", "AA057X", "AB061S", "AB061X", "AA071SF", "AB028N", "AB028E", "AA067S", "AA046B", "AA046S" ],
+    "Path": [
+      [ "C:\\Users\\TA\\OneDrive\\Desktop\\datatest" ],
+      [ "\\\\192.168.1.168\\Tamron\\Data_Inspc2\\Inspection\\d3" ],
+      [ "", "" ],
+      [ "", "" ],
+      [ "", "" ],
+      [ "", "" ],
+      [ "", "" ]
+    ]
+  },
+  "FolderDataOK": "C:\\Users\\TA\\OneDrive\\Desktop\\CheckMTF\\CheckMTF\\CheckMTF\\bin\\Debug\\net6.0-windows\\OK",
+  "FolderDataNG": "C:\\Users\\TA\\OneDrive\\Desktop\\CheckMTF\\CheckMTF\\CheckMTF\\bin\\Debug\\net6.0-windows\\NG"
+}
+
+
