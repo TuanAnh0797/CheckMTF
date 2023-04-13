@@ -22,17 +22,25 @@ namespace CheckMTF.ViewModel
         Config myconfig;
         bool checkruntab1;
         bool checkruntab2;
+        bool checkruntab3;
+
         public ObservableCollection<ListErrorFileCheck> myListErrorFileCheck { set; get; }
         public ObservableCollection<ListErrorContentFileCheck> myListErrorContentFileCheck { set; get; }
+
+        public ObservableCollection<ListErrorConfigFileCheck> myListErrorConfigFileCheck { set; get; }
+
 
         public List<ListErrorFileCheck> myListErrorFileCheckSaveOK;
         public List<ListErrorFileCheck> myListErrorFileCheckSaveNG;
         public List<ListErrorContentFileCheck> myListErrorContentFileCheckSaveOK;
         public List<ListErrorContentFileCheck> myListErrorContentFileCheckSaveNG;
+        public List<ListErrorConfigFileCheck> myListErrorConfigFileCheckSaveOK;
+        public List<ListErrorConfigFileCheck> myListErrorConfigFileCheckSaveNG;
         private string dateselected;
         private string modelselected;
         private string dateselectedtab2;
         private string modelselectedtab2;
+        private string modelselectedtab3;
         public string Dateselected
         {
             set
@@ -44,6 +52,12 @@ namespace CheckMTF.ViewModel
             {
                 return dateselected;
             }
+        }
+       
+        public string Modelselected
+        {
+            set { modelselected = value; OnPropertyChanged(); }
+            get { return modelselected; }
         }
         public string Modelselectedtab2
         {
@@ -62,23 +76,29 @@ namespace CheckMTF.ViewModel
                 return dateselectedtab2;
             }
         }
-        public string Modelselected
+        public string Modelselectedtab3
         {
-            set { modelselected = value; OnPropertyChanged(); }
-            get { return modelselected; }
+            set { modelselectedtab3 = value; OnPropertyChanged(); }
+            get { return modelselectedtab3; }
         }
 
         public List<string> cmb_data { get; set; }
         public List<string> cmb_datatab2 { get; set; }
 
+        public List<string> cmb_datatab3 { get; set; }
+
+
         public ICommand cmd_startcheck { get; set; }
         public ICommand cmd_exportdatatab1 { get; set; }
         public ICommand cmd_startchecktab2 { get; set; }
         public ICommand cmd_exportdatatab2 { get; set; }
+        public ICommand cmd_startchecktab3 { get; set; }
+        public ICommand cmd_exportdatatab3 { get; set; }
         public MainViewModel()
         {
             checkruntab1 = false;
             checkruntab2 = false;
+            checkruntab3 = false;
             checkloadedconfig = false;
             if (!checkloadedconfig)
             {
@@ -86,14 +106,20 @@ namespace CheckMTF.ViewModel
             }
             myListErrorFileCheck = new ObservableCollection<ListErrorFileCheck>();
             myListErrorContentFileCheck = new ObservableCollection<ListErrorContentFileCheck>();
+            myListErrorConfigFileCheck = new ObservableCollection<ListErrorConfigFileCheck>();
             myListErrorFileCheckSaveOK = new List<ListErrorFileCheck>();
             myListErrorFileCheckSaveNG = new List<ListErrorFileCheck>();
             myListErrorContentFileCheckSaveOK = new List<ListErrorContentFileCheck>();
             myListErrorContentFileCheckSaveNG = new List<ListErrorContentFileCheck>();
+            myListErrorConfigFileCheckSaveOK = new List<ListErrorConfigFileCheck>();
+            myListErrorConfigFileCheckSaveNG = new List<ListErrorConfigFileCheck>();
             cmd_startcheck = new RelayCommand<object>((p) => { return checkaccess(modelselected, dateselected,checkruntab1); }, (p) => { CheckModifyFile(); });
-            cmd_exportdatatab1 = new RelayCommand<object>((p) => { return checkexport<ListErrorFileCheck>(myListErrorFileCheck); }, (p) => { exportdatatocsv<ListErrorFileCheck>(myListErrorFileCheck, "FilePath,FileName,DateCreate,DateModify"); });
+            cmd_exportdatatab1 = new RelayCommand<object>((p) => { return checkexport<ListErrorFileCheck>(myListErrorFileCheck); }, (p) => { exportdatatocsv<ListErrorFileCheck>(myListErrorFileCheck, "FilePath,FileName,DateCreate,DateModify","ModifyFileCheck"); });
             cmd_startchecktab2 = new RelayCommand<object>((p) => { return checkaccess(modelselectedtab2, dateselectedtab2,checkruntab2); }, (p) => { ChecContentFile(); });
-            cmd_exportdatatab2 = new RelayCommand<object>((p) => { return checkexport<ListErrorContentFileCheck>(myListErrorContentFileCheck); }, (p) => { exportdatatocsv<ListErrorContentFileCheck>(myListErrorContentFileCheck, "FilePath,FileName,NumberLine,Header,End,Status"); });
+            cmd_exportdatatab2 = new RelayCommand<object>((p) => { return checkexport<ListErrorContentFileCheck>(myListErrorContentFileCheck); }, (p) => { exportdatatocsv<ListErrorContentFileCheck>(myListErrorContentFileCheck, "FilePath,FileName,NumberLine,Header,End,Status","ModifyContentFileCheck"); });
+            cmd_startchecktab3 = new RelayCommand<object>((p) => { return checkaccess(modelselectedtab3, "Nocheck", checkruntab3); }, (p) => { CheckModifyFileConfig(); });
+            cmd_exportdatatab3 = new RelayCommand<object>((p) => { return checkexport<ListErrorConfigFileCheck>(myListErrorConfigFileCheck); }, (p) => { exportdatatocsv<ListErrorConfigFileCheck>(myListErrorConfigFileCheck, "FilePath,FileName,DateModiFy,Status","ModifyFileConfig"); });
+
         }
         public bool checkexport<T>(ObservableCollection<T> mylist)
         {
@@ -112,6 +138,7 @@ namespace CheckMTF.ViewModel
                 myconfig = JsonConvert.DeserializeObject<Config>(contentconfig);
                 cmb_data = new List<string>(myconfig.Model.NameModel);
                 cmb_datatab2 = new List<string>(myconfig.Model.NameModel);
+                cmb_datatab3 = new List<string>(myconfig.ConfigModel.NameModel);
                 checkloadedconfig = true;
             }
             catch (Exception ex)
@@ -137,7 +164,7 @@ namespace CheckMTF.ViewModel
                     }
                     foreach (var item in myconfig.Model.Path[indexmodel])
                     {
-                        if (item.Length > 10 && mydateselected != null && myconfig.Model.Path[indexmodel].Count > 0 && !checkrun)
+                        if (item.Length > 10 && (mydateselected != null|| mydateselected == "Nocheck") && myconfig.Model.Path[indexmodel].Count > 0 && !checkrun)
                         {
                             return true;
                         }
@@ -154,10 +181,7 @@ namespace CheckMTF.ViewModel
         public void CheckModifyFile()
         {
             
-            //if (!checkruntab1)
-            //{
                 checkruntab1 = true;
-
                 Task.Factory.StartNew(() => {
                     myListErrorFileCheckSaveNG.Clear();
                     myListErrorFileCheckSaveOK.Clear();
@@ -215,7 +239,7 @@ namespace CheckMTF.ViewModel
                                 }
                             }
                         }
-                        autoexport(myListErrorFileCheckSaveOK, myListErrorFileCheckSaveNG, modelselected, "CheckFile");
+                        autoexport<ListErrorFileCheck>(myListErrorFileCheckSaveOK, myListErrorFileCheckSaveNG, modelselected, "CheckFile", "FilePath,FileName,DateCreate,DateModify,Status");
                         checkruntab1 = false;
                     }
                     catch (Exception ex)
@@ -225,10 +249,6 @@ namespace CheckMTF.ViewModel
 
                     }
                 });
-                
-            //}
-            
-           
         }
         public void ChecContentFile()
         {
@@ -319,7 +339,7 @@ namespace CheckMTF.ViewModel
                                 }
                             }
                         }
-                        autoexport2(myListErrorContentFileCheckSaveOK, myListErrorContentFileCheckSaveNG, modelselectedtab2, "CheckContentFile");
+                        autoexport<ListErrorContentFileCheck>(myListErrorContentFileCheckSaveOK, myListErrorContentFileCheckSaveNG, modelselectedtab2, "CheckContentFile", "FilePath,FileName,NumberLine,Header,End,Status");
                         checkruntab2 = false;
 
                     }
@@ -335,10 +355,75 @@ namespace CheckMTF.ViewModel
             //}
             
         }
-
-        public void exportdatatocsv<T>(ObservableCollection<T> listexport, string firstline)
+        public void CheckModifyFileConfig()
         {
-            string FileName = @"ErrorFileCheck" + " " + DateTime.Now.ToString("HH:mm_ddMMyyyy");
+            checkruntab3 = true;
+            Task.Factory.StartNew(() => {
+                myListErrorConfigFileCheckSaveNG.Clear();
+                myListErrorConfigFileCheckSaveOK.Clear();
+                App.Current.Dispatcher?.Invoke(() =>
+                {
+                    myListErrorConfigFileCheck.Clear();
+                });
+                try
+                {
+                    int indexnamemodel = 0;
+                    for (int i = 0; i < myconfig.ConfigModel.NameModel.Count; i++)
+                    {
+                        if (modelselectedtab3 == myconfig.ConfigModel.NameModel[i])
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            indexnamemodel++;
+
+                        }
+                    }
+                    for (int i = 0; i < myconfig.ConfigModel.Path[indexnamemodel].Count; i++)
+                    {
+                        DirectoryInfo d = new DirectoryInfo(myconfig.ConfigModel.Path[indexnamemodel][i]);
+                        DirectoryInfo[] sd = d.GetDirectories();
+                        foreach (DirectoryInfo sd2 in sd)
+                        {
+                                FileInfo[] fin = sd2.GetFiles("*.csv");
+                                foreach (var fcsv in fin)
+                                {
+                                    if (fcsv.LastWriteTime.Day == 1 && fcsv.LastWriteTime.Month == 1 && fcsv.LastWriteTime.Year == 2019)
+                                    {
+                                        App.Current.Dispatcher?.Invoke(() =>
+                                        {
+                                            myListErrorConfigFileCheck.Add(new ListErrorConfigFileCheck() { NameModel = modelselectedtab3, FilePath = sd2.FullName, FileName = fcsv.Name, DateModify = fcsv.LastWriteTime.ToString("HH:mm dd/MM/yyyy"), Statuscheck = "OK" });
+                                        });
+                                        myListErrorConfigFileCheckSaveOK.Add(new ListErrorConfigFileCheck() { NameModel = modelselectedtab3, FilePath = sd2.FullName, FileName = fcsv.Name, DateModify = fcsv.LastWriteTime.ToString("HH:mm dd/MM/yyyy"), Statuscheck = "OK" });
+                                    }
+                                    else
+                                    {
+                                        App.Current.Dispatcher?.Invoke(() =>
+                                        {
+                                            myListErrorConfigFileCheck.Add(new ListErrorConfigFileCheck() { NameModel = modelselectedtab3, FilePath = sd2.FullName, FileName = fcsv.Name, DateModify = fcsv.LastWriteTime.ToString("HH:mm dd/MM/yyyy"), Statuscheck = "NG" });
+
+                                        });
+                                        myListErrorConfigFileCheckSaveNG.Add(new ListErrorConfigFileCheck() { NameModel = modelselectedtab3, FilePath = sd2.FullName, FileName = fcsv.Name, DateModify = fcsv.LastWriteTime.ToString("HH:mm dd/MM/yyyy"), Statuscheck = "NG" });
+                                    }
+                                }
+                        }
+                    }
+                    autoexport<ListErrorConfigFileCheck>(myListErrorConfigFileCheckSaveOK, myListErrorConfigFileCheckSaveNG, modelselectedtab3, "CheckModifyFileConfig", " FilePath,FileName,DateModify,Status");
+                    checkruntab3 = false;
+                }
+                catch (Exception ex)
+                {
+                    checkruntab3 = false;
+                    MessageBox.Show(ex.ToString());
+
+                }
+            });
+        }
+
+        public void exportdatatocsv<T>(ObservableCollection<T> listexport, string firstline, string namefile)
+        {
+            string FileName = namefile + " " + DateTime.Now.ToString("HH:mm_ddMMyyyy");
             SaveFileDialog sf = new SaveFileDialog();
             sf.Filter = "Text file (*.csv)|*.csv";
             if (sf.ShowDialog() == true)
@@ -358,58 +443,28 @@ namespace CheckMTF.ViewModel
                 //}
             }
         }
-        public void autoexport(List<ListErrorFileCheck> listok, List<ListErrorFileCheck> listng, string mymodelselect, string NameFolder)
+        public void autoexport<T>(List<T> listok, List<T> listng, string mymodelselect, string NameFolder, string firstrow)
         {
             if (listok.Count > 0)
             {
-                //Directory.CreateDirectory(myconfig.FolderDataOK + "\\" + NameFolder);
                 using (StreamWriter sw = new StreamWriter(myconfig.FolderDataOK.Replace(@"\", @"\\")+"\\" + NameFolder+"_" + mymodelselect + "_" + DateTime.Now.ToString("HHmmss_ddMMyyyy") + ".csv", append: true, Encoding.UTF8))
                 {
-                    sw.WriteLine("FilePath,FileName,DateCreate,DateModify");
+                    sw.WriteLine(firstrow);
                     foreach (var fcsv in listok)
                     {
                         sw.WriteLine(fcsv.ToString());
 
-                    }
-                }
-                if (listng.Count > 0)
-                {
-                    //Directory.CreateDirectory(myconfig.FolderDataNG + "\\" + NameFolder);
-                    using (StreamWriter sw = new StreamWriter(myconfig.FolderDataNG.Replace(@"\", @"\\")+"\\"+  NameFolder+"_" + mymodelselect + "_" + DateTime.Now.ToString("HHmmss_ddMMyyyy") + ".csv", append: true, Encoding.UTF8))
-                    {
-                        sw.WriteLine("FilePath,FileName,DateCreate,DateModify");
-                        foreach (var fcsv in listng)
-                        {
-                            sw.WriteLine(fcsv.ToString());
-                        }
                     }
                 }
             }
-        }
-        public void autoexport2(List<ListErrorContentFileCheck> listok, List<ListErrorContentFileCheck> listng, string mymodelselect, string NameFolder)
-        {
-            if (listok.Count > 0)
+            if (listng.Count > 0)
             {
-                //Directory.CreateDirectory(myconfig.FolderDataOK + "\\" + NameFolder);
-                using (StreamWriter sw = new StreamWriter(myconfig.FolderDataOK.Replace(@"\", @"\\")+"\\"  + NameFolder+"_" + mymodelselect + "_" + DateTime.Now.ToString("HHmmss_ddMMyyyy") + ".csv", append: true, Encoding.UTF8))
+                using (StreamWriter sw = new StreamWriter(myconfig.FolderDataNG.Replace(@"\", @"\\") + "\\" + NameFolder + "_" + mymodelselect + "_" + DateTime.Now.ToString("HHmmss_ddMMyyyy") + ".csv", append: true, Encoding.UTF8))
                 {
-                    sw.WriteLine("FilePath,FileName,NumberLine,Header,End,Status");
-                    foreach (var fcsv in listok)
+                    sw.WriteLine(firstrow);
+                    foreach (var fcsv in listng)
                     {
                         sw.WriteLine(fcsv.ToString());
-
-                    }
-                }
-                if (listng.Count > 0)
-                {
-                    //Directory.CreateDirectory(myconfig.FolderDataNG + "\\" + NameFolder);
-                    using (StreamWriter sw = new StreamWriter(myconfig.FolderDataNG.Replace(@"\", @"\\")+"\\" + NameFolder + "_" + mymodelselect + "_" + DateTime.Now.ToString("HHmmss_ddMMyyyy") + ".csv", append: true, Encoding.UTF8))
-                    {
-                        sw.WriteLine("FilePath,FileName,NumberLine,Header,End,Status");
-                        foreach (var fcsv in listng)
-                        {
-                            sw.WriteLine(fcsv.ToString());
-                        }
                     }
                 }
             }

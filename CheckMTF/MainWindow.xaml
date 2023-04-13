@@ -256,7 +256,7 @@
                                 <ColumnDefinition ></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Margin="5,10,0,5" Orientation="Horizontal">
-                                <ComboBox SelectedItem="{Binding Modelselectedtab3, Mode=OneWayToSource}" ItemsSource="{Binding cmb_datatab2}" Margin="0,0,20,0"  FontSize="15" Height="auto" Width="250" materialDesign:HintAssist.Hint="Hãy chọn Model" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True">
+                                <ComboBox SelectedItem="{Binding Modelselectedtab3, Mode=OneWayToSource}" ItemsSource="{Binding cmb_datatab3}" Margin="0,0,20,0"  FontSize="15" Height="auto" Width="250" materialDesign:HintAssist.Hint="Hãy chọn Model" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True">
                                 </ComboBox>
                                 <Button Command="{Binding cmd_startchecktab3}" FontSize="15" Foreground="Black"  Background="Green" Content="Kiểm tra" Height="40" Margin="20,0,0,0" Width="100"></Button>
                             </StackPanel>
@@ -297,17 +297,10 @@
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn Width="200" Header="DateCreate">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding DateCreate}"></TextBlock>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                        </GridViewColumn>
                                         <GridViewColumn Width="200" Header="Datemodify">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Datemodify}"></TextBlock>
+                                                    <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding DateModify}"></TextBlock>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
