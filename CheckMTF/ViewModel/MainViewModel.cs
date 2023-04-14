@@ -37,8 +37,10 @@ namespace CheckMTF.ViewModel
         public List<ListErrorConfigFileCheck> myListErrorConfigFileCheckSaveOK;
         public List<ListErrorConfigFileCheck> myListErrorConfigFileCheckSaveNG;
         private string dateselected;
+        private string dateselectedEndtab1;
         private string modelselected;
         private string dateselectedtab2;
+        private string dateselectedEndtab2;
         private string modelselectedtab2;
         private string modelselectedtab3;
         public string Dateselected
@@ -59,6 +61,18 @@ namespace CheckMTF.ViewModel
             set { modelselected = value; OnPropertyChanged(); }
             get { return modelselected; }
         }
+        public string DateselectedEndtab1
+        {
+            set
+            {
+                dateselectedEndtab1 = value;
+                OnPropertyChanged();
+            }
+            get
+            {
+                return dateselectedEndtab1;
+            }
+        }
         public string Modelselectedtab2
         {
             set { modelselectedtab2 = value; OnPropertyChanged(); }
@@ -74,6 +88,18 @@ namespace CheckMTF.ViewModel
             get
             {
                 return dateselectedtab2;
+            }
+        }
+        public string DateselectedEndtab2
+        {
+            set
+            {
+                dateselectedEndtab2 = value;
+                OnPropertyChanged();
+            }
+            get
+            {
+                return dateselectedEndtab2;
             }
         }
         public string Modelselectedtab3
@@ -94,6 +120,8 @@ namespace CheckMTF.ViewModel
         public ICommand cmd_exportdatatab2 { get; set; }
         public ICommand cmd_startchecktab3 { get; set; }
         public ICommand cmd_exportdatatab3 { get; set; }
+        public ICommand cmd_Uncheckedtab1 { get; set; }
+        public ICommand cmd_Uncheckedtab2 { get; set; }
         public MainViewModel()
         {
             checkruntab1 = false;
@@ -113,8 +141,10 @@ namespace CheckMTF.ViewModel
             myListErrorContentFileCheckSaveNG = new List<ListErrorContentFileCheck>();
             myListErrorConfigFileCheckSaveOK = new List<ListErrorConfigFileCheck>();
             myListErrorConfigFileCheckSaveNG = new List<ListErrorConfigFileCheck>();
-            cmd_startcheck = new RelayCommand<object>((p) => { return checkaccess(modelselected, dateselected,checkruntab1); }, (p) => { CheckModifyFile(); });
-            cmd_exportdatatab1 = new RelayCommand<object>((p) => { return checkexport<ListErrorFileCheck>(myListErrorFileCheck); }, (p) => { exportdatatocsv<ListErrorFileCheck>(myListErrorFileCheck, "FilePath,FileName,DateCreate,DateModify","ModifyFileCheck"); });
+            cmd_startcheck = new RelayCommand<object>((p) => { return checkaccess(modelselected, dateselected, checkruntab1); }, (p) => { CheckModifyFile(); });
+            cmd_exportdatatab1 = new RelayCommand<object>((p) => { return checkexport<ListErrorFileCheck>(myListErrorFileCheck); }, (p) => { exportdatatocsv<ListErrorFileCheck>(myListErrorFileCheck, "FilePath,FileName,DateCreate,DateModify", "ModifyFileCheck"); });
+            cmd_Uncheckedtab1 = new RelayCommand<object>((p) => { return true; }, (p) => { DateselectedEndtab1 = null; });
+            cmd_Uncheckedtab2 = new RelayCommand<object>((p) => { return true; }, (p) => { DateselectedEndtab2 = null; });
             cmd_startchecktab2 = new RelayCommand<object>((p) => { return checkaccess(modelselectedtab2, dateselectedtab2,checkruntab2); }, (p) => { ChecContentFile(); });
             cmd_exportdatatab2 = new RelayCommand<object>((p) => { return checkexport<ListErrorContentFileCheck>(myListErrorContentFileCheck); }, (p) => { exportdatatocsv<ListErrorContentFileCheck>(myListErrorContentFileCheck, "FilePath,FileName,NumberLine,Header,End,Status","ModifyContentFileCheck"); });
             cmd_startchecktab3 = new RelayCommand<object>((p) => { return checkaccess(modelselectedtab3, "Nocheck", checkruntab3); }, (p) => { CheckModifyFileConfig(); });
@@ -194,67 +224,151 @@ namespace CheckMTF.ViewModel
 
                         DateTime mydatetime = DateTime.Parse(dateselected);
                         string datetimestring = mydatetime.ToString("MM/dd/yy");
-                        int indexnamemodel = 0;
-                        for (int i = 0; i < myconfig.Model.NameModel.Count; i++)
+                        string datetimeendtab1string = null;
+                         if (dateselectedEndtab1 != null)
+                         {
+                             DateTime mydatetimeend = DateTime.Parse(dateselectedEndtab1);
+                             datetimeendtab1string = mydatetimeend.ToString("MM/dd/yy");
+                         }
+                         //
+                        if (dateselectedEndtab1 !=null && (Int32.Parse(datetimeendtab1string.Split('/')[2]) < Int32.Parse(datetimestring.Split('/')[2]) ||(Int32.Parse(datetimeendtab1string.Split('/')[2]) == Int32.Parse(datetimestring.Split('/')[2]) && Int32.Parse(datetimeendtab1string.Split('/')[0]) < Int32.Parse(datetimestring.Split('/')[0]))))
                         {
-                            if (modelselected == myconfig.Model.NameModel[i])
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                indexnamemodel++;
-
-                            }
+                            MessageBox.Show("Chọn ngày bắt đầu và ngày kết thúc chưa hợp lệ");
+                            checkruntab1 = false;
                         }
-                        for (int i = 0; i < myconfig.Model.Path[indexnamemodel].Count; i++)
+                        //
+                        else if(dateselectedEndtab1==null)
                         {
-                            DirectoryInfo d = new DirectoryInfo(myconfig.Model.Path[indexnamemodel][i]);
-                            DirectoryInfo[] sd = d.GetDirectories();
-                            foreach (DirectoryInfo sd2 in sd)
+                            int indexnamemodel = 0;
+                            for (int i = 0; i < myconfig.Model.NameModel.Count; i++)
                             {
-                                if (Regex.IsMatch(sd2.Name, $@"^{datetimestring.Split('/')[2]}年{datetimestring.Split('/')[0]}"))
+                                if (modelselected == myconfig.Model.NameModel[i])
                                 {
-                                    FileInfo[] fin = sd2.GetFiles("*.csv");
-                                    foreach (var fcsv in fin)
-                                    {
-                                        if (Int32.Parse(fcsv.Name.Split('_')[1].Split('.')[2]) == Int32.Parse(fcsv.LastWriteTime.Day.ToString()))
-                                        {
-                                            App.Current.Dispatcher?.Invoke(() =>
-                                            {
-                                                myListErrorFileCheck.Add(new ListErrorFileCheck() { NameModel = modelselected, FilePath = sd2.FullName, FileName = fcsv.Name, DateCreate = fcsv.Name.Split('_')[1], DateModify = fcsv.LastWriteTime.ToString("dd/MM/yyyy"), Statuscheck = "OK" });
-                                            });
-                                            myListErrorFileCheckSaveOK.Add(new ListErrorFileCheck() { NameModel = modelselected, FilePath = sd2.FullName, FileName = fcsv.Name, DateCreate = fcsv.Name.Split('_')[1], DateModify = fcsv.LastWriteTime.ToString("dd/MM/yyyy"), Statuscheck = "OK" });
-                                        }
-                                        else
-                                        {
-                                            App.Current.Dispatcher?.Invoke(() =>
-                                            {
-                                                myListErrorFileCheck.Add(new ListErrorFileCheck() { NameModel = modelselected, FilePath = sd2.FullName, FileName = fcsv.Name, DateCreate = fcsv.Name.Split('_')[1], DateModify = fcsv.LastWriteTime.ToString("dd/MM/yyyy"), Statuscheck = "NG" });
+                                    break;
+                                }
+                                else
+                                {
+                                    indexnamemodel++;
 
-                                            });
-                                            myListErrorFileCheckSaveNG.Add(new ListErrorFileCheck() { NameModel = modelselected, FilePath = sd2.FullName, FileName = fcsv.Name, DateCreate = fcsv.Name.Split('_')[1], DateModify = fcsv.LastWriteTime.ToString("dd/MM/yyyy"), Statuscheck = "NG" });
+                                }
+                            }
+                            for (int i = 0; i < myconfig.Model.Path[indexnamemodel].Count; i++)
+                            {
+                                DirectoryInfo d = new DirectoryInfo(myconfig.Model.Path[indexnamemodel][i]);
+                                DirectoryInfo[] sd = d.GetDirectories();
+                                foreach (DirectoryInfo sd2 in sd)
+                                {
+                                    if (Regex.IsMatch(sd2.Name, $@"^{datetimestring.Split('/')[2]}年{datetimestring.Split('/')[0]}"))
+                                    {
+                                        FileInfo[] fin = sd2.GetFiles("*.csv");
+                                        foreach (var fcsv in fin)
+                                        {
+                                            if (Int32.Parse(fcsv.Name.Split('_')[1].Split('.')[2]) == Int32.Parse(fcsv.LastWriteTime.Day.ToString()))
+                                            {
+                                                App.Current.Dispatcher?.Invoke(() =>
+                                                {
+                                                    myListErrorFileCheck.Add(new ListErrorFileCheck() { NameModel = modelselected, FilePath = sd2.FullName, FileName = fcsv.Name, DateCreate = fcsv.Name.Split('_')[1], DateModify = fcsv.LastWriteTime.ToString("dd/MM/yyyy"), Statuscheck = "OK" });
+                                                });
+                                                myListErrorFileCheckSaveOK.Add(new ListErrorFileCheck() { NameModel = modelselected, FilePath = sd2.FullName, FileName = fcsv.Name, DateCreate = fcsv.Name.Split('_')[1], DateModify = fcsv.LastWriteTime.ToString("dd/MM/yyyy"), Statuscheck = "OK" });
+                                            }
+                                            else
+                                            {
+                                                App.Current.Dispatcher?.Invoke(() =>
+                                                {
+                                                    myListErrorFileCheck.Add(new ListErrorFileCheck() { NameModel = modelselected, FilePath = sd2.FullName, FileName = fcsv.Name, DateCreate = fcsv.Name.Split('_')[1], DateModify = fcsv.LastWriteTime.ToString("dd/MM/yyyy"), Statuscheck = "NG" });
+
+                                                });
+                                                myListErrorFileCheckSaveNG.Add(new ListErrorFileCheck() { NameModel = modelselected, FilePath = sd2.FullName, FileName = fcsv.Name, DateCreate = fcsv.Name.Split('_')[1], DateModify = fcsv.LastWriteTime.ToString("dd/MM/yyyy"), Statuscheck = "NG" });
+                                            }
                                         }
                                     }
                                 }
                             }
+                            autoexport<ListErrorFileCheck>(myListErrorFileCheckSaveOK, myListErrorFileCheckSaveNG, modelselected, "CheckFile", "FilePath,FileName,DateCreate,DateModify,Status");
+                            checkruntab1 = false;
                         }
-                        autoexport<ListErrorFileCheck>(myListErrorFileCheckSaveOK, myListErrorFileCheckSaveNG, modelselected, "CheckFile", "FilePath,FileName,DateCreate,DateModify,Status");
-                        checkruntab1 = false;
-                    }
+                        else
+                        {
+                            int indexnamemodel = 0;
+                            for (int i = 0; i < myconfig.Model.NameModel.Count; i++)
+                            {
+                                if (modelselected == myconfig.Model.NameModel[i])
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    indexnamemodel++;
+
+                                }
+                            }
+                            for (int yearslected = Int32.Parse(datetimestring.Split('/')[2]); yearslected <= Int32.Parse(datetimeendtab1string.Split('/')[2]); yearslected++)
+                            {
+                                int startcheckmonth = yearslected == Int32.Parse(datetimeendtab1string.Split('/')[2]) ? Int32.Parse(datetimeendtab1string.Split('/')[0]) : 12;
+                                int endcheckmonth;
+                                if(Int32.Parse(datetimestring.Split('/')[2]) == Int32.Parse(datetimeendtab1string.Split('/')[2]))
+                                {
+                                    endcheckmonth = Int32.Parse(datetimestring.Split('/')[0]);
+                                }
+                                else 
+                                {
+                                    //if(yearslected == Int32.Parse(datetimeendtab1string.Split('/')[2]))
+                                    endcheckmonth = 1;
+                                }
+                                for (int monthselected = startcheckmonth; monthselected >= endcheckmonth; monthselected--)
+                                {
+                                     string monthconvert = monthselected.ToString().Length < 2 ? "0" + monthselected.ToString(): monthselected.ToString();
+                                    for (int i = 0; i < myconfig.Model.Path[indexnamemodel].Count; i++)
+                                    {
+                                        DirectoryInfo d = new DirectoryInfo(myconfig.Model.Path[indexnamemodel][i]);
+                                        DirectoryInfo[] sd = d.GetDirectories();
+                                        foreach (DirectoryInfo sd2 in sd)
+                                        {
+                                            if (Regex.IsMatch(sd2.Name, $@"^{yearslected.ToString()}年{monthconvert}"))
+                                            {
+                                                FileInfo[] fin = sd2.GetFiles("*.csv");
+                                                foreach (var fcsv in fin)
+                                                {
+                                                    if (Int32.Parse(fcsv.Name.Split('_')[1].Split('.')[2]) == Int32.Parse(fcsv.LastWriteTime.Day.ToString()))
+                                                    {
+                                                        App.Current.Dispatcher?.Invoke(() =>
+                                                        {
+                                                            myListErrorFileCheck.Add(new ListErrorFileCheck() { NameModel = modelselected, FilePath = sd2.FullName, FileName = fcsv.Name, DateCreate = fcsv.Name.Split('_')[1], DateModify = fcsv.LastWriteTime.ToString("dd/MM/yyyy"), Statuscheck = "OK" });
+                                                        });
+                                                        myListErrorFileCheckSaveOK.Add(new ListErrorFileCheck() { NameModel = modelselected, FilePath = sd2.FullName, FileName = fcsv.Name, DateCreate = fcsv.Name.Split('_')[1], DateModify = fcsv.LastWriteTime.ToString("dd/MM/yyyy"), Statuscheck = "OK" });
+                                                    }
+                                                    else
+                                                    {
+                                                        App.Current.Dispatcher?.Invoke(() =>
+                                                        {
+                                                            myListErrorFileCheck.Add(new ListErrorFileCheck() { NameModel = modelselected, FilePath = sd2.FullName, FileName = fcsv.Name, DateCreate = fcsv.Name.Split('_')[1], DateModify = fcsv.LastWriteTime.ToString("dd/MM/yyyy"), Statuscheck = "NG" });
+
+                                                        });
+                                                        myListErrorFileCheckSaveNG.Add(new ListErrorFileCheck() { NameModel = modelselected, FilePath = sd2.FullName, FileName = fcsv.Name, DateCreate = fcsv.Name.Split('_')[1], DateModify = fcsv.LastWriteTime.ToString("dd/MM/yyyy"), Statuscheck = "NG" });
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                autoexport<ListErrorFileCheck>(myListErrorFileCheckSaveOK, myListErrorFileCheckSaveNG, modelselected, "CheckFile", "FilePath,FileName,DateCreate,DateModify,Status");
+                                checkruntab1 = false;
+                            }
+                        }
+
+
+                     }
                     catch (Exception ex)
                     {
-                        checkruntab1 = false;
-                        MessageBox.Show(ex.ToString());
+                         checkruntab1 = false;
+                         MessageBox.Show(ex.ToString());
 
                     }
-                });
+                 });
         }
         public void ChecContentFile()
         {
             
-            //if (!checkruntab2)
-            //{
                 checkruntab2 = true;
                 Task.Factory.StartNew(() =>
                 {
@@ -269,78 +383,186 @@ namespace CheckMTF.ViewModel
                         
                         DateTime mydatetime = DateTime.Parse(dateselectedtab2);
                         string datetimestring = mydatetime.ToString("MM/dd/yy");
-                        int indexnamemodel = 0;
-                        for (int i = 0; i < myconfig.Model.NameModel.Count; i++)
+                        string datetimeendtab1string = null;
+                        if (dateselectedEndtab2 != null)
                         {
-                            if (modelselectedtab2 == myconfig.Model.NameModel[i])
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                indexnamemodel++;
-                            }
+                            DateTime mydatetimeend = DateTime.Parse(dateselectedEndtab2);
+                            datetimeendtab1string = mydatetimeend.ToString("MM/dd/yy");
                         }
-                        //
-                        for (int i = 0; i < myconfig.Model.Path[indexnamemodel].Count; i++)
+                        if (dateselectedEndtab2 != null && (Int32.Parse(datetimeendtab1string.Split('/')[2]) < Int32.Parse(datetimestring.Split('/')[2]) || (Int32.Parse(datetimeendtab1string.Split('/')[2]) == Int32.Parse(datetimestring.Split('/')[2]) && Int32.Parse(datetimeendtab1string.Split('/')[0]) < Int32.Parse(datetimestring.Split('/')[0]))))
                         {
-                            DirectoryInfo d = new DirectoryInfo(myconfig.Model.Path[indexnamemodel][i]);
-                            DirectoryInfo[] sd = d.GetDirectories();
-                            foreach (DirectoryInfo sd2 in sd)
+                            MessageBox.Show("Chọn ngày bắt đầu và ngày kết thúc chưa hợp lệ");
+                            checkruntab2 = false;
+                        }
+                        else if (dateselectedEndtab2 == null)
+                        {
+                            int indexnamemodel = 0;
+                            for (int i = 0; i < myconfig.Model.NameModel.Count; i++)
                             {
-                                if (Regex.IsMatch(sd2.Name, $@"^{datetimestring.Split('/')[2]}年{datetimestring.Split('/')[0]}"))
+                                if (modelselectedtab2 == myconfig.Model.NameModel[i])
                                 {
-                                    bool checkOKNG = false;
-                                    int countline = 0;
-                                    FileInfo[] fin = sd2.GetFiles("*.csv");
-                                    foreach (var fcsv in fin)
+                                    break;
+                                }
+                                else
+                                {
+                                    indexnamemodel++;
+                                }
+                            }
+
+                            for (int i = 0; i < myconfig.Model.Path[indexnamemodel].Count; i++)
+                            {
+                                DirectoryInfo d = new DirectoryInfo(myconfig.Model.Path[indexnamemodel][i]);
+                                DirectoryInfo[] sd = d.GetDirectories();
+                                foreach (DirectoryInfo sd2 in sd)
+                                {
+                                    if (Regex.IsMatch(sd2.Name, $@"^{datetimestring.Split('/')[2]}年{datetimestring.Split('/')[0]}"))
                                     {
-                                        List<string> listdata = new List<string>();
-                                        using (StreamReader strreader = new StreamReader(sd2.FullName + "\\" + $"{fcsv.Name}", Encoding.UTF8))
+                                        bool checkOKNG = false;
+                                        int countline = 0;
+                                        FileInfo[] fin = sd2.GetFiles("*.csv");
+                                        foreach (var fcsv in fin)
                                         {
-                                            while (!strreader.EndOfStream)
+                                            List<string> listdata = new List<string>();
+                                            using (StreamReader strreader = new StreamReader(sd2.FullName + "\\" + $"{fcsv.Name}", Encoding.UTF8))
                                             {
-                                                listdata.Add(strreader.ReadLine());
-                                            }
-                                            strreader.Close();
-                                        }
-                                        foreach (string line in listdata)
-                                        {
-
-                                            string[] arraydata;
-                                            arraydata = line.Split(',');
-
-                                            if (arraydata.Length > 87)
-                                            {
-                                                if (arraydata[0].Trim('\0') != arraydata[88].Trim('\0') && arraydata[0].Trim('\0').Length > 10 && arraydata[0].Trim('\0') != "3190100000000" && arraydata[0].Trim('\0') != "3290100000000" && arraydata[88].Trim('\0') != "3290100000000" && arraydata[88].Trim('\0') != "3290100000000" && arraydata[0].Trim('\0') != "0003190100000000" && arraydata[0].Trim('\0') != "0003290100000000" && arraydata[88].Trim('\0') != "0003290100000000" && arraydata[88].Trim('\0') != "0003290100000000")
+                                                while (!strreader.EndOfStream)
                                                 {
-                                                    App.Current.Dispatcher.Invoke(() =>
-                                                    {
-                                                        myListErrorContentFileCheck.Add(new ListErrorContentFileCheck() { NameModel = modelselectedtab2, FilePath = sd2.FullName, FileName = fcsv.Name, NumberLine = countline.ToString(), HeaderLine = arraydata[0].Trim('\0'), EndLine = arraydata[88].Trim('\0'), Statuscheck = "NG" });
-
-                                                    });
-                                                    myListErrorContentFileCheckSaveNG.Add(new ListErrorContentFileCheck() { NameModel = modelselectedtab2, FilePath = sd2.FullName, FileName = fcsv.Name, NumberLine = countline.ToString(), HeaderLine = arraydata[0].Trim('\0'), EndLine = arraydata[88].Trim('\0'), Statuscheck = "NG" });
-                                                    checkOKNG = true;
+                                                    listdata.Add(strreader.ReadLine());
                                                 }
+                                                strreader.Close();
                                             }
-                                            countline++;
-                                        }
-                                        if (!checkOKNG)
-                                        {
-                                        App.Current.Dispatcher.Invoke(() =>
-                                        {
-                                            myListErrorContentFileCheck.Add(new ListErrorContentFileCheck() { NameModel = modelselectedtab2, FilePath = sd2.FullName, FileName = fcsv.Name, NumberLine = "", HeaderLine = "", EndLine = "", Statuscheck = "OK" });
+                                            foreach (string line in listdata)
+                                            {
 
-                                        });
-                                            myListErrorContentFileCheckSaveOK.Add(new ListErrorContentFileCheck() { NameModel = modelselectedtab2, FilePath = sd2.FullName, FileName = fcsv.Name, NumberLine = "", HeaderLine = "", EndLine = "", Statuscheck = "OK" });
+                                                string[] arraydata;
+                                                arraydata = line.Split(',');
 
+                                                if (arraydata.Length > 87)
+                                                {
+                                                    if (arraydata[0].Trim('\0') != arraydata[88].Trim('\0') && arraydata[0].Trim('\0').Length > 10 && arraydata[0].Trim('\0') != "3190100000000" && arraydata[0].Trim('\0') != "3290100000000" && arraydata[88].Trim('\0') != "3290100000000" && arraydata[88].Trim('\0') != "3290100000000" && arraydata[0].Trim('\0') != "0003190100000000" && arraydata[0].Trim('\0') != "0003290100000000" && arraydata[88].Trim('\0') != "0003290100000000" && arraydata[88].Trim('\0') != "0003290100000000")
+                                                    {
+                                                        App.Current.Dispatcher.Invoke(() =>
+                                                        {
+                                                            myListErrorContentFileCheck.Add(new ListErrorContentFileCheck() { NameModel = modelselectedtab2, FilePath = sd2.FullName, FileName = fcsv.Name, NumberLine = countline.ToString(), HeaderLine = arraydata[0].Trim('\0'), EndLine = arraydata[88].Trim('\0'), Statuscheck = "NG" });
+
+                                                        });
+                                                        myListErrorContentFileCheckSaveNG.Add(new ListErrorContentFileCheck() { NameModel = modelselectedtab2, FilePath = sd2.FullName, FileName = fcsv.Name, NumberLine = countline.ToString(), HeaderLine = arraydata[0].Trim('\0'), EndLine = arraydata[88].Trim('\0'), Statuscheck = "NG" });
+                                                        checkOKNG = true;
+                                                    }
+                                                }
+                                                countline++;
+                                            }
+                                            if (!checkOKNG)
+                                            {
+                                                App.Current.Dispatcher.Invoke(() =>
+                                                {
+                                                    myListErrorContentFileCheck.Add(new ListErrorContentFileCheck() { NameModel = modelselectedtab2, FilePath = sd2.FullName, FileName = fcsv.Name, NumberLine = "", HeaderLine = "", EndLine = "", Statuscheck = "OK" });
+
+                                                });
+                                                myListErrorContentFileCheckSaveOK.Add(new ListErrorContentFileCheck() { NameModel = modelselectedtab2, FilePath = sd2.FullName, FileName = fcsv.Name, NumberLine = "", HeaderLine = "", EndLine = "", Statuscheck = "OK" });
+
+                                            }
                                         }
                                     }
                                 }
                             }
+                            autoexport<ListErrorContentFileCheck>(myListErrorContentFileCheckSaveOK, myListErrorContentFileCheckSaveNG, modelselectedtab2, "CheckContentFile", "FilePath,FileName,NumberLine,Header,End,Status");
+                            checkruntab2 = false;
                         }
-                        autoexport<ListErrorContentFileCheck>(myListErrorContentFileCheckSaveOK, myListErrorContentFileCheckSaveNG, modelselectedtab2, "CheckContentFile", "FilePath,FileName,NumberLine,Header,End,Status");
-                        checkruntab2 = false;
+                        else
+                        {
+                            int indexnamemodel = 0;
+                            for (int i = 0; i < myconfig.Model.NameModel.Count; i++)
+                            {
+                                if (modelselectedtab2 == myconfig.Model.NameModel[i])
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    indexnamemodel++;
+                                }
+                            }
+                            for (int yearslected = Int32.Parse(datetimestring.Split('/')[2]); yearslected <= Int32.Parse(datetimeendtab1string.Split('/')[2]); yearslected++)
+                            {
+                                int startcheckmonth = yearslected == Int32.Parse(datetimeendtab1string.Split('/')[2]) ? Int32.Parse(datetimeendtab1string.Split('/')[0]) : 12;
+                                int endcheckmonth;
+                                if (Int32.Parse(datetimestring.Split('/')[2]) == Int32.Parse(datetimeendtab1string.Split('/')[2]))
+                                {
+                                    endcheckmonth = Int32.Parse(datetimestring.Split('/')[0]);
+                                }
+                                else
+                                {
+                                    //yearslected == Int32.Parse(datetimeendtab1string.Split('/')[2])
+                                    endcheckmonth = 1;
+                                }
+                                for (int monthselected = startcheckmonth; monthselected >= endcheckmonth; monthselected--)
+                                {
+                                    string monthconvert = monthselected.ToString().Length < 2 ? "0" + monthselected.ToString() : monthselected.ToString();
+                                    for (int i = 0; i < myconfig.Model.Path[indexnamemodel].Count; i++)
+                                    {
+                                        DirectoryInfo d = new DirectoryInfo(myconfig.Model.Path[indexnamemodel][i]);
+                                        DirectoryInfo[] sd = d.GetDirectories();
+                                        foreach (DirectoryInfo sd2 in sd)
+                                        {
+                                            if (Regex.IsMatch(sd2.Name, $@"^{yearslected}年{monthconvert}"))
+                                            {
+                                                bool checkOKNG = false;
+                                                int countline = 0;
+                                                FileInfo[] fin = sd2.GetFiles("*.csv");
+                                                foreach (var fcsv in fin)
+                                                {
+                                                    List<string> listdata = new List<string>();
+                                                    using (StreamReader strreader = new StreamReader(sd2.FullName + "\\" + $"{fcsv.Name}", Encoding.UTF8))
+                                                    {
+                                                        while (!strreader.EndOfStream)
+                                                        {
+                                                            listdata.Add(strreader.ReadLine());
+                                                        }
+                                                        strreader.Close();
+                                                    }
+                                                    foreach (string line in listdata)
+                                                    {
+
+                                                        string[] arraydata;
+                                                        arraydata = line.Split(',');
+
+                                                        if (arraydata.Length > 87)
+                                                        {
+                                                            if (arraydata[0].Trim('\0') != arraydata[88].Trim('\0') && arraydata[0].Trim('\0').Length > 10 && arraydata[0].Trim('\0') != "3190100000000" && arraydata[0].Trim('\0') != "3290100000000" && arraydata[88].Trim('\0') != "3290100000000" && arraydata[88].Trim('\0') != "3290100000000" && arraydata[0].Trim('\0') != "0003190100000000" && arraydata[0].Trim('\0') != "0003290100000000" && arraydata[88].Trim('\0') != "0003290100000000" && arraydata[88].Trim('\0') != "0003290100000000")
+                                                            {
+                                                                App.Current.Dispatcher.Invoke(() =>
+                                                                {
+                                                                    myListErrorContentFileCheck.Add(new ListErrorContentFileCheck() { NameModel = modelselectedtab2, FilePath = sd2.FullName, FileName = fcsv.Name, NumberLine = countline.ToString(), HeaderLine = arraydata[0].Trim('\0'), EndLine = arraydata[88].Trim('\0'), Statuscheck = "NG" });
+
+                                                                });
+                                                                myListErrorContentFileCheckSaveNG.Add(new ListErrorContentFileCheck() { NameModel = modelselectedtab2, FilePath = sd2.FullName, FileName = fcsv.Name, NumberLine = countline.ToString(), HeaderLine = arraydata[0].Trim('\0'), EndLine = arraydata[88].Trim('\0'), Statuscheck = "NG" });
+                                                                checkOKNG = true;
+                                                            }
+                                                        }
+                                                        countline++;
+                                                    }
+                                                    if (!checkOKNG)
+                                                    {
+                                                        App.Current.Dispatcher.Invoke(() =>
+                                                        {
+                                                            myListErrorContentFileCheck.Add(new ListErrorContentFileCheck() { NameModel = modelselectedtab2, FilePath = sd2.FullName, FileName = fcsv.Name, NumberLine = "", HeaderLine = "", EndLine = "", Statuscheck = "OK" });
+
+                                                        });
+                                                        myListErrorContentFileCheckSaveOK.Add(new ListErrorContentFileCheck() { NameModel = modelselectedtab2, FilePath = sd2.FullName, FileName = fcsv.Name, NumberLine = "", HeaderLine = "", EndLine = "", Statuscheck = "OK" });
+
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                            autoexport<ListErrorContentFileCheck>(myListErrorContentFileCheckSaveOK, myListErrorContentFileCheckSaveNG, modelselectedtab2, "CheckContentFile", "FilePath,FileName,NumberLine,Header,End,Status");
+                            checkruntab2 = false;
+
+                        }
 
                     }
                     catch (Exception ex)
@@ -352,7 +574,6 @@ namespace CheckMTF.ViewModel
 
                 });
 
-            //}
             
         }
         public void CheckModifyFileConfig()
