@@ -20,22 +20,53 @@
          WindowStyle="None"
          ResizeMode="NoResize"
         WindowState="Maximized"
+        Name="MainForm"
          Title="MainWindow" Height="450" Width="800">
+    
     <Window.DataContext>
         <Mydata:MainViewModel>
         </Mydata:MainViewModel>
     </Window.DataContext>
+
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding cmd_keydownOK}" Modifiers="Ctrl" Key="G">
+        </KeyBinding>
+        <KeyBinding Command="{Binding cmd_keydownNG}" Modifiers="Ctrl" Key="E">
+        </KeyBinding>
+    </Window.InputBindings>
+    <Window.Resources>
+        <Mydata:Convertcmb x:Key="Convertcmb"></Mydata:Convertcmb>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <uc:MyControlBarxaml Grid.Row="0"></uc:MyControlBarxaml>
-        <Grid Grid.Row="1">
+        <uc:MyControlBarxaml Grid.Row="0" ></uc:MyControlBarxaml>
+        <StackPanel Grid.Row="1" Orientation="Vertical">
+            <TextBlock FontSize="15" Foreground="OrangeRed" HorizontalAlignment="Right" Margin="0,1,10,1"  Text="Nhấn Ctrl+G để mở Folder lưu kết quả kiểm tra OK || Nhấn Ctrl+E để mở Folder lưu kết quả kiểm tra NG">
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever">
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                           Duration="0:0:3">
+                                    <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}" />
+                                    <DiscreteObjectKeyFrame KeyTime="0:0:2.5" Value="{x:Static Visibility.Hidden}" />
+                                </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
+        </StackPanel>
+        
+        <Grid Grid.Row="2">
             <TabControl Width="auto" materialDesign:ColorZoneAssist.Background="{DynamicResource MaterialDesignCardBackground}" materialDesign:ColorZoneAssist.Foreground="{DynamicResource PrimaryHueMidBrush}" materialDesign:ColorZoneAssist.Mode="Custom" Style="{StaticResource MaterialDesignFilledTabControl}">
                 <TabItem >
                     <TabItem.Header >
-                        <TextBlock Text="Kiểm tra File" FontSize="20"></TextBlock>
+                        <TextBlock Text="Check Modify D3" FontSize="20"></TextBlock>
                     </TabItem.Header>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -53,10 +84,29 @@
 
                                     </Myconverter:MyDateTimeConvert>
                                 </StackPanel.Resources>
-                                <ComboBox SelectedItem="{Binding Modelselected, Mode=OneWayToSource}" ItemsSource="{Binding cmb_data}" Margin="0,0,20,0"  FontSize="15" Height="auto" Width="250" materialDesign:HintAssist.Hint="Hãy chọn Model" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True">
+                                <ComboBox Name="Cmb_tab1" ItemsSource="{Binding cmb_data, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" SelectedItem ="{Binding Modelselected, Mode=TwoWay, Converter={StaticResource Convertcmb}}" DisplayMemberPath="Cmb_displaymember" Margin="0,0,20,0"  FontSize="15" Height="auto" Width="250" materialDesign:HintAssist.Hint="Hãy chọn Model" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="DropDownOpened">
+                                            <i:InvokeCommandAction Command="{Binding cmd_Updatecmb}" CommandParameter="{Binding ElementName=Cmb_tab1}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Is_checked}" Value="True">
+                                                    <Setter Property="Foreground" Value="Green"></Setter>
+                                                    <Setter Property="Margin" Value="5"></Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Is_checked}" Value="False">
+                                                    <Setter Property="Foreground" Value="Red"></Setter>
+                                                    <Setter Property="Margin" Value="5"></Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
                                 </ComboBox>
                                 <TextBlock Text="Tháng bắt đầu" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Margin="0,0,20,0"></TextBlock>
-                                <DatePicker SelectedDate="{Binding Dateselected, Mode=OneWayToSource}"  FontSize="15" Width="250"  materialDesign:HintAssist.Hint="Hãy chọn tháng cần kiểm tra" Style="{StaticResource MaterialDesignOutlinedDatePicker}" IsTodayHighlighted="True" SelectedDateFormat="Short"  />
+                                <DatePicker SelectedDate="{Binding Dateselected, Mode=OneWayToSource}"  FontSize="15" Width="250" Height="50"  materialDesign:HintAssist.Hint="Hãy chọn tháng cần kiểm tra" Style="{StaticResource MaterialDesignOutlinedDatePicker}" IsTodayHighlighted="True" SelectedDateFormat="Short"  />
                                 <TextBlock Foreground="Black" Text="Tháng kết thúc" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Margin="20,0,20,0"></TextBlock>
                                 <DatePicker SelectedDate="{Binding DateselectedEndtab1, Mode=TwoWay}"  FontSize="15" Width="250"  materialDesign:HintAssist.Hint="Hãy chọn tháng cần kiểm tra"  IsTodayHighlighted="True" SelectedDateFormat="Short">
                                     <DatePicker.Style>
@@ -102,14 +152,14 @@
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn Width="500"  Header="FilePath" >
+                                        <GridViewColumn Width="800"  Header="FilePath" >
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FilePath}"></TextBlock>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn Width="200" Header="FileName">
+                                        <GridViewColumn Width="350" Header="FileName">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FileName}"></TextBlock>
@@ -159,7 +209,7 @@
                 </TabItem>
                 <TabItem>
                     <TabItem.Header >
-                        <TextBlock Text="Kiểm tra nội dung file" FontSize="20"></TextBlock>
+                        <TextBlock Text="Check QR Code" FontSize="20"></TextBlock>
                     </TabItem.Header>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -172,7 +222,34 @@
                                 <ColumnDefinition ></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Margin="5,10,0,5" Orientation="Horizontal">
-                                <ComboBox SelectedItem="{Binding Modelselectedtab2, Mode=OneWayToSource}" ItemsSource="{Binding cmb_datatab2}" Margin="0,0,20,0"  FontSize="15" Height="auto" Width="250" materialDesign:HintAssist.Hint="Hãy chọn Model" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True">
+                                <ComboBox Name="Cmb_tab2" SelectedItem="{Binding Modelselectedtab2, Mode=TwoWay, Converter={StaticResource Convertcmb}}" ItemsSource="{Binding cmb_datatab2, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Cmb_displaymember" Margin="0,0,20,0"  FontSize="15" Height="auto" Width="250" materialDesign:HintAssist.Hint="Hãy chọn Model" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="DropDownOpened">
+                                            <i:InvokeCommandAction Command="{Binding cmd_Updatecmb}" CommandParameter="{Binding ElementName=Cmb_tab2}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Is_checked}" Value="True">
+                                                    <Setter Property="Foreground" Value="Green"></Setter>
+                                                    <Setter Property="Margin" Value="5"></Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Is_checked}" Value="False">
+                                                    <Setter Property="Foreground" Value="Red"></Setter>
+                                                    <Setter Property="Margin" Value="5"></Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsCheckContent}" Value="False">
+                                                    <Setter Property="Visibility" Value="Hidden"></Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsCheckContent}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"></Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+
+
                                 </ComboBox>
                                 <TextBlock Text="Tháng bắt đầu" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Margin="0,0,20,0"></TextBlock>
                                 <DatePicker SelectedDate="{Binding Dateselectedtab2, Mode=OneWayToSource}"  FontSize="15" Width="250"  materialDesign:HintAssist.Hint="Hãy chọn tháng cần kiểm tra" Style="{StaticResource MaterialDesignOutlinedDatePicker}" IsTodayHighlighted="True" SelectedDateFormat="Short"  />
@@ -221,14 +298,14 @@
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn Width="500"  Header="FilePath" >
+                                        <GridViewColumn Width="800"  Header="FilePath" >
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FilePath}"></TextBlock>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn Width="200" Header="FileName">
+                                        <GridViewColumn Width="350" Header="FileName">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FileName}"></TextBlock>
@@ -286,7 +363,7 @@
                 </TabItem>
                 <TabItem>
                     <TabItem.Header >
-                        <TextBlock Text="Kiểm tra File cài đặt" FontSize="20"></TextBlock>
+                        <TextBlock Text="Check Modify Configure" FontSize="20"></TextBlock>
                     </TabItem.Header>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -299,7 +376,26 @@
                                 <ColumnDefinition ></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Margin="5,10,0,5" Orientation="Horizontal">
-                                <ComboBox SelectedItem="{Binding Modelselectedtab3, Mode=OneWayToSource}" ItemsSource="{Binding cmb_datatab3}" Margin="0,0,20,0"  FontSize="15" Height="auto" Width="250" materialDesign:HintAssist.Hint="Hãy chọn Model" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True">
+                                <ComboBox Name="Cmb_tab3" SelectedItem="{Binding Modelselectedtab3, Mode=TwoWay, Converter={StaticResource Convertcmb}}" ItemsSource="{Binding cmb_datatab3, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Cmb_displaymember" Margin="0,0,20,0"  FontSize="15" Height="auto" Width="250" materialDesign:HintAssist.Hint="Hãy chọn Model" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="DropDownOpened">
+                                            <i:InvokeCommandAction Command="{Binding cmd_Updatecmb}" CommandParameter="{Binding ElementName=Cmb_tab3}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Is_checked}" Value="True">
+                                                    <Setter Property="Foreground" Value="Green"></Setter>
+                                                    <Setter Property="Margin" Value="5"></Setter>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Is_checked}" Value="False">
+                                                    <Setter Property="Foreground" Value="Red"></Setter>
+                                                    <Setter Property="Margin" Value="5"></Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
                                 </ComboBox>
                                 <Button Command="{Binding cmd_startchecktab3}" FontSize="15" Foreground="Black"  Background="Green" Content="Kiểm tra" Height="40" Margin="20,0,0,0" Width="100"></Button>
                             </StackPanel>
@@ -326,14 +422,14 @@
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn Width="500"  Header="FilePath" >
+                                        <GridViewColumn Width="800"  Header="FilePath" >
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FilePath}"></TextBlock>
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn Width="200" Header="FileName">
+                                        <GridViewColumn Width="350" Header="FileName">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock TextAlignment="Center" Width="auto" FontSize="15" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FileName}"></TextBlock>

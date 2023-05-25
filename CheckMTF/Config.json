@@ -1,30 +1,47 @@
 ﻿{
   "Model": {
-    "NameModel": [ "AA062S", "AA056SF", "AA022N", "AA02E", "AA025N", "AA025E", "AAF050S", "AAF051S", "AAF053S", "AB070S", "AB070X", "AA057S", "AA057X", "AB061S", "AB061X", "AA071SF", "AB028N", "AB028E", "AA067S", "AA046B", "AA046S" ],
+    "NameModel": [ "AA062S", "AA056SF", "AB070S", "AB070X", "AA057S", "AA057X", "AA057Z", "AB061S", "AB061X", "AA071SF", "AA067S", "AA046B" ],
     "Path": [
-      [ "C:\\Users\\TA\\OneDrive\\Desktop\\datatest" ],
-      [ "\\\\192.168.1.168\\Tamron\\Data_Inspc2\\Inspection\\d3" ],
-      [ "", "" ],
-      [ "", "" ],
-      [ "", "" ],
-      [ "", "" ],
-      [ "", "" ]
-    ]
+      [ "\\\\192.168.2.165\\d3", "\\\\192.168.2.166\\d3", "\\\\192.168.2.167\\d3" ],
+      [ "\\\\192.168.1.168\\d3" ],
+      [ "\\\\192.168.2.165\\d3s" ],
+      [ "\\\\192.168.2.165\\d3x" ],
+      [ "\\\\192.168.2.165\\d3s" ],
+      [ "\\\\192.168.2.165\\d3x" ],
+      [ "\\\\192.168.2.165\\d3z" ],
+      [ "\\\\192.168.2.165\\d3" ],
+      [ "\\\\192.168.2.165\\d3" ],
+      [ "mron\\Data_Inspc2\\Inspection\\d3" ],
+      [ "\\\\192.168.2.165\\d3", "\\\\192.168.2.166\\d3", "\\\\192.168.2.167\\d3" ],
+      [ "\\\\192.168.2.165\\d3" ]
+    ],
+    "EndLine": [ "87", "88", "87", "87", "87", "87", "87", "87", "87", "88", "87", "88" ],
+    "IsCheckedTab1": [ "True", "True", "True", "True", "True", "True", "True", "True", "False", "False", "True", "False" ],
+    "IsCheckedTab2": [ "True", "True", "True", "True", "True", "True", "True", "True", "False", "False", "True", "False" ],
+    "IsCheckContent": [ "True", "True", "True", "True", "True", "True", "True", "True", "True", "True", "True", "True" ],
+    "MonthCheck": "5"
   },
   "ConfigModel": {
-    "NameModel": [ "AA062S", "AA056SF", "AA022N", "AA02E", "AA025N", "AA025E", "AAF050S", "AAF051S", "AAF053S", "AB070S", "AB070X", "AA057S", "AA057X", "AB061S", "AB061X", "AA071SF", "AB028N", "AB028E", "AA067S", "AA046B", "AA046S" ],
+    "NameModel": [ "AA062S", "AA056SF", "AB070S", "AB070X", "AA057S", "AA057X", "AA057Z", "AB061S", "AB061X", "AA071SF", "AA067S", "AA046B" ],
     "Path": [
-      [ "C:\\Users\\TA\\OneDrive\\Desktop\\datatest" ],
-      [ "\\\\192.168.1.168\\Tamron\\Data_Inspc2\\Inspection\\d3" ],
+      [ "\\\\192.168.2.165\\Config", "\\\\192.168.2.166\\Config", "\\\\192.168.2.167\\Config" ],
+      [ "\\\\192.168.1.168\\Config" ],
+      [ "\\\\192.168.2.165\\Configs" ],
+      [ "\\\\192.168.2.165\\Configx" ],
+      [ "\\\\192.168.2.165\\Configs" ],
+      [ "\\\\192.168.2.165\\Configx" ],
+      [ "\\\\192.168.2.165\\Configz" ],
+      [ "\\\\192.168.2.165\\Config" ],
+      [ "\\\\192.168.2.165\\Config" ],
       [ "", "" ],
-      [ "", "" ],
-      [ "", "" ],
-      [ "", "" ],
+      [ "\\\\192.168.2.165\\Config_Inspc1", "\\\\192.168.2.166\\Config_Inspc2", "\\\\192.168.2.167\\Config_Inspc3" ],
       [ "", "" ]
-    ]
+    ],
+    "IsChecked": [ "True", "True", "False", "False", "False", "False", "False", "False", "False", "False", "False", "False" ],
+    "MonthCheck": "5"
   },
-  "FolderDataOK": "C:\\Users\\TA\\OneDrive\\Desktop\\CheckMTF\\CheckMTF\\CheckMTF\\bin\\Debug\\net6.0-windows\\OK",
-  "FolderDataNG": "C:\\Users\\TA\\OneDrive\\Desktop\\CheckMTF\\CheckMTF\\CheckMTF\\bin\\Debug\\net6.0-windows\\NG"
+  "FolderDataOK": "C:\\Users\\TA\\OneDrive\\Desktop\\CheckMTF\\CheckMTF\\CheckMTF\\bin\\Debug\\net6.0-windows\\Result\\OK",
+  "FolderDataNG": "C:\\Users\\TA\\OneDrive\\Desktop\\CheckMTF\\CheckMTF\\CheckMTF\\bin\\Debug\\net6.0-windows\\Result\\NG"
 }
 
 

@@ -1,1 +1,0 @@
-Get-ChildItem -force C:\Users\DAT\Desktop\menuthinh2222\* -Recurse| ForEach-Object{$_.LastWriteTime = ("3 August 2019 17:10:00")}

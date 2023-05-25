@@ -32,8 +32,8 @@ C:\Users\TA\Desktop\CheckMTF\CheckMTF\CheckMTF\bin\Debug\net6.0-windows\System.W
 C:\Users\TA\Desktop\CheckMTF\CheckMTF\CheckMTF\bin\Debug\net6.0-windows\Config.json
 C:\Users\TA\Desktop\CheckMTF\CheckMTF\CheckMTF\bin\Debug\net6.0-windows\Newtonsoft.Json.dll
 C:\Users\TA\Desktop\CheckMTF\CheckMTF\CheckMTF\obj\Debug\net6.0-windows\CheckMTF_Content.g.cs
-C:\Users\TA\OneDrive\Desktop\CheckMTF\CheckMTF\CheckMTF\bin\Debug\net6.0-windows\CheckMTF.exe
 C:\Users\TA\OneDrive\Desktop\CheckMTF\CheckMTF\CheckMTF\bin\Debug\net6.0-windows\Config.json
+C:\Users\TA\OneDrive\Desktop\CheckMTF\CheckMTF\CheckMTF\bin\Debug\net6.0-windows\CheckMTF.exe
 C:\Users\TA\OneDrive\Desktop\CheckMTF\CheckMTF\CheckMTF\bin\Debug\net6.0-windows\CheckMTF.deps.json
 C:\Users\TA\OneDrive\Desktop\CheckMTF\CheckMTF\CheckMTF\bin\Debug\net6.0-windows\CheckMTF.runtimeconfig.json
 C:\Users\TA\OneDrive\Desktop\CheckMTF\CheckMTF\CheckMTF\bin\Debug\net6.0-windows\CheckMTF.dll

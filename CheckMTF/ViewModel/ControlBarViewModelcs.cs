@@ -1,6 +1,7 @@
 ﻿using Quanlybarcode.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,16 +14,20 @@ namespace CheckMTF.ViewModel
     
     public class ControlBarViewModelcs : BaseViewModel
     {
+        public string imagesource { get; set; }
         public ICommand cmd_CloseWindow { get; set; }
         public ICommand cmd_NormalWindow {  get; set; }
         public ICommand cmd_MinimizeWindow { get; set; }
         public ICommand cmd_MoveWindow { get; set; }
         public ControlBarViewModelcs()
         {
+            
             cmd_CloseWindow = new RelayCommand<UserControl>((p) => { return true; }, (p) => MethodCloseWindow(p));
             cmd_NormalWindow = new RelayCommand<UserControl>((p) => { return true;}, (p)=>MethodNormalWindow(p));
             cmd_MinimizeWindow = new RelayCommand<UserControl>((p) => { return true; }, (p) => MethodMinimizeWindow(p));
             cmd_MoveWindow = new RelayCommand<UserControl>((p) => { return p != null ? true : false; }, (p) => MethodMoveWindow(p));
+            string[] fileimage = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\" + "Image");
+            imagesource = fileimage[0];
         }
         public void MethodCloseWindow(UserControl p)
         {

@@ -26,16 +26,24 @@
     </UserControl.DataContext>-->
     <Grid>
         <materialDesign:ColorZone  Padding="5,5,5,5" Background="CadetBlue">
-            <DockPanel>
-                <StackPanel  Orientation="Horizontal">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0"  Orientation="Horizontal">
+                    <Image Source="{Binding imagesource}" Height="20" Width="20" ></Image>
                     <TextBlock Foreground="Bisque" Margin="5,0,0,0" VerticalAlignment="Center" FontFamily="Cambria Math" Text="Phần mềm kiểm tra công đoạn MTF" FontSize="22" FontWeight="Bold"/>
+
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Background="Transparent">
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Background="Transparent">
                     <Button Command="{Binding cmd_MinimizeWindow}" CommandParameter="{Binding ElementName=MyControlBarTA}" BorderBrush="White" Margin="5" Background="Green" Content="{materialDesign:PackIcon Kind=WindowMinimize}" />
                     <Button Command="{Binding cmd_NormalWindow}" CommandParameter="{Binding ElementName=MyControlBarTA}" BorderBrush="White" Margin="5" Background="Green" Content="{materialDesign:PackIcon Kind=WindowRestore}" />
                     <Button Command="{Binding cmd_CloseWindow}" CommandParameter="{Binding ElementName=MyControlBarTA}" BorderBrush="White" Margin="5" Background="Red" Content="{materialDesign:PackIcon Kind=CloseThick}" />
                 </StackPanel>
-            </DockPanel>
+            </Grid>
+                
+               
         </materialDesign:ColorZone>
     </Grid>
 </UserControl>
