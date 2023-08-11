@@ -1,0 +1,21 @@
+ private void button1_Click(object sender, EventArgs e)
+        {
+            float columnWidth = tableLayoutPanel1.Width/5;
+            float columnheigt = tableLayoutPanel1.Height/4;
+            if (tableLayoutPanel1.Controls.Count < (tableLayoutPanel1.RowCount * tableLayoutPanel1.ColumnCount))
+            {
+                Form2 p = new Form2(Convert.ToInt32(columnWidth), Convert.ToInt32(columnheigt),index);
+                Size sizepanel = new Size(tableLayoutPanel1.Width, tableLayoutPanel1.Height);
+                p.MaximumSize = sizepanel;
+                p.TopLevel = false;
+                tableLayoutPanel1.Controls.Add(p);
+                p.Show();
+                index++;
+            }
+            else
+            {
+                MessageBox.Show("Full");
+            }
+            
+            
+        }
