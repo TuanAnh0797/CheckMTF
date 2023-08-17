@@ -1,0 +1,50 @@
+13:38:02 15/08/2023,PLC1,String or binary data would be truncated.
+The statement has been terminated.
+13:44:17 15/08/2023,PLC1,String or binary data would be truncated.
+The statement has been terminated.
+14:12:18 15/08/2023,PLC1,String or binary data would be truncated.
+The statement has been terminated.
+15:36:27 15/08/2023,PLC02,Error timed out Open Connection .
+15:37:32 15/08/2023,PLC1,Error timed out Open Connection .
+15:39:18 15/08/2023,PLC1,Error timed out Open Connection .
+15:42:47 15/08/2023,PLC1,Error timed out Open Connection .
+15:45:12 15/08/2023,PLC1,Error timed out Open Connection .
+15:45:30 15/08/2023,PLC1,Error timed out Open Connection .
+18:23:19 15/08/2023,PLC02,Error timed out Open Connection .
+22:43:00 15/08/2023,PLC02,Error timed out Open Connection .
+22:43:06 15/08/2023,PLC02,Error timed out Open Connection .
+22:44:41 15/08/2023,PLC02,Error timed out Open Connection .
+22:46:44 15/08/2023,PLC02,Error timed out Open Connection .
+23:03:37 15/08/2023,PLC02,Error timed out Open Connection .
+23:06:44 15/08/2023,PLC02,Error timed out Open Connection .
+23:06:50 15/08/2023,PLC02,Error timed out Open Connection .
+23:07:04 15/08/2023,PLC02,Error timed out Open Connection .
+23:16:22 15/08/2023,PLC02,Error timed out Open Connection .
+23:16:36 15/08/2023,PLC02,Error timed out Open Connection .
+23:17:05 15/08/2023,PLC02,Error timed out Open Connection .
+23:22:44 15/08/2023,PLC02,Error timed out Open Connection .
+06:00:44 16/08/2023,PLC1,Error Trigger Exist Receive timed out.
+06:41:06 16/08/2023,PLC1,Error timed out Open Connection .
+06:41:43 16/08/2023,PLC02,Error timed out Open Connection .
+06:41:43 16/08/2023,PLC1,Error timed out Open Connection .
+06:41:43 16/08/2023,PLCCW1,Error timed out Open Connection .
+06:43:05 16/08/2023,PLC1,Error timed out Open Connection .
+08:07:33 16/08/2023,PLCCW1,Error timed out Open Connection .
+08:18:09 16/08/2023,PLC1,Error timed out Open Connection .
+08:25:38 16/08/2023,PLC1,Error timed out Open Connection .
+16:14:30 16/08/2023,Gascharge01,Error Trigger Exist Receive timed out.
+16:14:40 16/08/2023,Gascharge01,Reconnect
+16:31:19 16/08/2023,Gascharge01,Error Trigger Exist Receive timed out.
+16:31:21 16/08/2023,Gascharge01,Reconnect
+17:32:37 16/08/2023,Gascharge01,Unable to read data from the transport connection: A socket operation was attempted to an unreachable network.
+17:36:42 16/08/2023,Gascharge01,Reconnect
+00:33:41 17/08/2023,ta1,Value cannot be null.
+Parameter name: src
+00:36:42 17/08/2023,ta1,Error timed out Open Connection .
+00:37:13 17/08/2023,ta1,Error timed out Open Connection .
+00:51:29 17/08/2023,ta2,Error timed out Open Connection .
+00:53:08 17/08/2023,ta1,Error timed out Open Connection .
+01:10:21 17/08/2023,test1,Value cannot be null.
+Parameter name: src
+01:15:18 17/08/2023,test1,Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index
