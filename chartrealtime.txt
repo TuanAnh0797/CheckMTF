@@ -1,0 +1,74 @@
+ var areaChartCanvas = $('#areaChart').get(0)
+        var ctx = areaChartCanvas.getContext('2d')
+        var chartData = {
+            labels: [],
+            datasets: [{
+                label: 'Data',
+                data: [],
+                borderColor: 'blue',
+                borderWidth: 1,
+                fill: false
+            }]
+        };
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: chartData
+
+        });
+        var areaChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                display: false
+            },
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        display: false,
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    ticks: {
+                        beginAtZero: true,
+                        max: 10000
+                    }
+                }]
+            }
+        };
+        function initChart() {
+            chart.update();
+        }
+        function test() {
+            $.ajax({
+                type: 'POST',
+                url: '/WebService.asmx/HelloWorld',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (response) {
+                    var data = JSON.parse(response.d);
+                    chartData.labels = data.labels;
+                    chartData.datasets[0].data = data.values;
+                    initChart();
+                },
+                error: function (xhr, status, error) {
+                    alert(error)
+                }
+            });
+        }
+        setInterval(test, 1000);
+
+        $(function () {
+            test();
+        })
+
+
+
+ DataTable dt = Db_connect1.StoreFillDS("getdatatest",CommandType.StoredProcedure);
+        var data = new
+        {
+            labels = dt.AsEnumerable().Select(row => row.Field<string>("Name")).ToArray(),
+            values = dt.AsEnumerable().Select(row => row.Field<int>("DataValue")).ToArray(),
+        };
+        string a = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+        return a;
