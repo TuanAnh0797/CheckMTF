@@ -1,0 +1,150 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:keyenceandroi/loginform.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+class settingbluetooth extends StatefulWidget {
+  const settingbluetooth({super.key});
+
+  @override
+  State<settingbluetooth> createState() => _settingbluetoothState();
+}
+
+class _settingbluetoothState extends State<settingbluetooth> {
+  var _datatextfield = TextEditingController();
+  @override
+  void initState()  {
+    // TODO: implement initState
+    super.initState();
+    loadSettings();
+  }
+  Future<void> loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _datatextfield.text = prefs.getString('mac') ?? ''; // Cập nhật giá trị TextField
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    final Size sizescreen = MediaQuery
+        .of(context)
+        .size;
+    return Scaffold(
+      appBar: AppBar(
+        title:  const Text('Setting Bluetooth',style: TextStyle(fontSize: 30)),
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.only(top: 20),
+            width: sizescreen.width * 0.95,
+            height: sizescreen.height * 0.85,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: sizescreen.width * 0.15,
+                      child: Text('MAC',style: TextStyle(fontSize: 18)),
+                    ),
+                    //SizedBox(width: 2,),
+                    Container(
+                      width: sizescreen.width * 0.8,
+                      child: TextField(
+                        autofocus: false,
+                        controller: _datatextfield,
+
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                            ),
+                            contentPadding: EdgeInsets.only(top: 0,bottom: 0,left: 5,right: 5),
+
+
+                        ),
+                        style: TextStyle(fontSize: 15),
+
+
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 15,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      color: Colors.green,
+                      width: 150,
+                      height: 40,
+                      child: ElevatedButton(onPressed: () {
+
+                        _showMyDialog();
+
+                      },
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.green), child: const Text('Print Test',style: TextStyle(fontSize: 20))
+                      ),
+                    ),
+                    SizedBox(width: 10,),
+                    SizedBox(
+                      width: 100,
+                      height: 40,
+                      child: ElevatedButton(onPressed: () {
+
+                        _showMyDialog();
+
+                      }, child: const Text('Save',style: TextStyle(fontSize: 20),)),
+                    ),
+
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+
+    );
+  }
+  void saveSettings(String key, String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(key, value);
+
+  }
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Notify'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Confirm change'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () {
+                saveSettings("mac",_datatextfield.text);
+                Navigator.of(context).pop();
+
+              },
+            ),
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                  loadSettings();
+                  Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+}
